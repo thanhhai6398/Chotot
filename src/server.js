@@ -16,7 +16,7 @@ const MONGO_PASS = 'bYdLPCvQVM4x5XVr';
 //Connect to MongoDB
 mongoose
     .connect(
-        `mongodb+srv://${MONGO_USER}:${MONGO_PASS}@cluster0.r0veury.mongodb.net/?retryWrites=true&w=majority`
+        `mongodb+srv://${MONGO_USER}:${MONGO_PASS}@cluster0.r0veury.mongodb.net/CNPMM?retryWrites=true&w=majority`
     )
     .then(() => {
         console.log("Connected to MongoDB");
@@ -44,6 +44,8 @@ const startServer = () => {
     });
     /* Routes */
     app.get('/', (req, res) => res.send('Hello World!'));
+    const categoryRoute = require('./routes/category.route');
+    app.use('/categories',categoryRoute);
 
     /** Error handling */
     app.use((req, res, next) => {
