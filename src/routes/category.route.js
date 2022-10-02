@@ -1,7 +1,11 @@
 const express = require('express');
-const Router = express.Router();
+const router = express.Router();
 const controllers = require('../controllers/category.controller');
 
-Router.post('',controllers.save);
+router.get('', controllers.getAll);
+router.get('/:id', controllers.getById);
+router.post('', controllers.save);
+router.delete('/:id', controllers.deleteById);
+router.put('/:id', controllers.update);
 
-module.exports = Router;
+module.exports = router;

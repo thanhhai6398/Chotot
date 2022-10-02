@@ -1,22 +1,33 @@
 const express = require('express');
-//const dotenv = require('dotenv');
+const dotenv = require('dotenv');
 const mongoose = require('mongoose');
 const morgan = require("morgan");
+const cors = require('cors');
+const app = express();
+
+const corsOptions = require('./config/corsOptions');
+const credentials = require('./middlewares/credentials');
+
+//routes
+const categoryRoute = require('./routes/category.route');
+const registerRoute = require('./routes/register.route');
 
 //set path to .env file
-//dotenv.config({ path: './.env' });
+dotenv.config({ path: './.env' });
 
-const app = express();
 //use to log
 app.use(morgan("combined"));
 
-//temp for connect DB
-const MONGO_USER = 'thanhnhile';
-const MONGO_PASS = 'bYdLPCvQVM4x5XVr';
+// Handle options credentials check - before CORS!
+// and fetch cookies credentials requirement
+app.use(credentials);
+
+// Cross Origin Resource Sharing
+app.use(cors(corsOptions));
 //Connect to MongoDB
 mongoose
     .connect(
-        `mongodb+srv://${MONGO_USER}:${MONGO_PASS}@cluster0.r0veury.mongodb.net/CNPMM?retryWrites=true&w=majority`
+        `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@cluster0.r0veury.mongodb.net/${process.env.MONGO_DB}?retryWrites=true&w=majority`
     )
     .then(() => {
         console.log("Connected to MongoDB");
@@ -43,9 +54,9 @@ const startServer = () => {
         next();
     });
     /* Routes */
+    app.use('/register', registerRoute);
+    app.use('/categories', categoryRoute);
     app.get('/', (req, res) => res.send('Hello World!'));
-    const categoryRoute = require('./routes/category.route');
-    app.use('/categories',categoryRoute);
 
     /** Error handling */
     app.use((req, res, next) => {
