@@ -16,7 +16,7 @@ const postSchema = new Schema(
         year: { type: Number },
         warranty: { type: String },
         category: { type: mongoose.Types.ObjectId, ref: 'Category' },
-        postedBy: {type:mongoose.Types.ObjectId, ref:'User'}
+        postedBy: { type: mongoose.Types.ObjectId, ref: 'User' }
     },
     {
         versionKey: false

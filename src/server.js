@@ -9,8 +9,9 @@ const corsOptions = require('./config/corsOptions');
 const credentials = require('./middlewares/credentials');
 
 //routes
-const categoryRoute = require('./routes/category.route');
+const authUserRoute = require('./routes/auth.route');
 const registerRoute = require('./routes/register.route');
+const categoryRoute = require('./routes/api/category.route');
 
 //set path to .env file
 dotenv.config({ path: './.env' });
@@ -54,9 +55,13 @@ const startServer = () => {
         next();
     });
     /* Routes */
-    app.use('/register', registerRoute);
-    app.use('/categories', categoryRoute);
     app.get('/', (req, res) => res.send('Hello World!'));
+    app.use('/auth', authUserRoute);
+    app.use('/register', registerRoute);
+
+    //authencation
+    app.use('/categories', categoryRoute);
+
 
     /** Error handling */
     app.use((req, res, next) => {

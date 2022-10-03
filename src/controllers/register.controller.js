@@ -6,9 +6,9 @@ const STATUS_CODE = require('../utils/httpStatusCode');
 
 const register = async (req, res) => {
     const { username, password, phone, address } = req.body;
-    const duplicate = await User.findOne({ phone }).exec();
+    const duplicate = await User.findOne({ phone: phone }).exec();
     if (duplicate) {
-        res.status(409).json('Số điện thoại đã tồn tại');
+        return res.status(STATUS_CODE.CONFLICT).json({ errMsg: 'Số điện thoại đã tồn tại' });
     }
     try {
         const hashedPwd = await bcrypt.hash(password, 10);
@@ -19,12 +19,12 @@ const register = async (req, res) => {
             phone,
             address
         });
-        newUser
+        return newUser
             .save()
             .then(data => res.status(STATUS_CODE.OK).json({ data }))
             .catch(err => res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).json({ errMsg: err }));
     } catch (error) {
-        res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).json({ errMsg: err });
+        return res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).json({ errMsg: err });
     }
 
 

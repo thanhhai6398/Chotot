@@ -1,12 +1,10 @@
 const mongoose = require('mongoose');
 const Category = require('../models/category.model');
 const STATUS_CODE = require('../utils/httpStatusCode');
-
-
 const getAll = async (req, res) => {
     return Category.find()
-        .then(data => res.status(200).json({ data }))
-        .catch(err => res.status(500).json({ errMsg: err }));
+        .then(data => res.status(STATUS_CODE.OK).json({ data }))
+        .catch(err => res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).json({ errMsg: err }));
 
 };
 const getById = (req, res) => {
@@ -23,14 +21,14 @@ const save = (req, res) => {
         _id: new mongoose.Types.ObjectId(),
         name,
     });
-    category
+    return category
         .save()
         .then(data => res.status(STATUS_CODE.OK).json({ data }))
         .catch(err => res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).json({ errMsg: err }));
 };
 const deleteById = (req, res) => {
     const { id } = req.params;
-    Category.findByIdAndDelete(id)
+    return Category.findByIdAndDelete(id)
         .then(category => {
             if (category) {
                 res.status(STATUS_CODE.OK).json({ 'message': 'Deleted category with id ' + id });

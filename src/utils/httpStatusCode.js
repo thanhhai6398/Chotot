@@ -1,6 +1,7 @@
 class HTTP_STATUS_CODE {
     static INTERNAL_SERVER_ERROR = 500;
     static OK = 200;
+    static NO_CONTENT = 204;
     static BAD_REQUEST = 400;
     static UNAUTHORIZED = 401;
     static NOT_FOUND = 404;
