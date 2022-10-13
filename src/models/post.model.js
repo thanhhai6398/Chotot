@@ -6,10 +6,10 @@ const User = require('./user.model');
 const postSchema = new Schema(
     {
         title: { type: String, require: true },
-        price: { type: Double, required: true },
+        price: { type: Number, required: true },
         description: { type: String, require: true },
         address: { type: String, require: true },
-        datePosted: { type: Date, require: true, default: new Date().toLocaleString() },
+        datePosted: { type: String, require: true, default: new Date().toLocaleString() },
         images: { type: [String], require: true },
         delete_ymd: { type: Date, default: null },
         branchName: { type: String },
@@ -22,3 +22,5 @@ const postSchema = new Schema(
         versionKey: false
     }
 );
+const PostModel = mongoose.model('Post', postSchema);
+module.exports = PostModel;

@@ -58,7 +58,7 @@ const startServer = () => {
     app.get('/', (req, res) => res.send('Hello World!'));
     app.use('/auth', authUserRoute);
     app.use('/register', registerRoute);
-
+    app.use('/post',postRoute);
     //authencation
     app.use('/categories', categoryRoute);
 
