@@ -7,11 +7,13 @@ const app = express();
 
 const corsOptions = require('./config/corsOptions');
 const credentials = require('./middlewares/credentials');
+const STATUS_CODE = require('./utils/httpStatusCode');
 
 //routes
 const authUserRoute = require('./routes/auth.route');
 const registerRoute = require('./routes/register.route');
 const categoryRoute = require('./routes/api/category.route');
+const postRoute = require('./routes/api/post.route');
 
 //set path to .env file
 dotenv.config({ path: './.env' });
@@ -58,15 +60,15 @@ const startServer = () => {
     app.get('/', (req, res) => res.send('Hello World!'));
     app.use('/auth', authUserRoute);
     app.use('/register', registerRoute);
-    app.use('/post',postRoute);
     //authencation
     app.use('/categories', categoryRoute);
+    app.use('/posts', postRoute);
 
 
     /** Error handling */
     app.use((req, res, next) => {
-        const error = new Error("not found");
-        return res.status(404).json({
+        const error = new Error("not found path");
+        return res.status(STATUS_CODE.NOT_FOUND).json({
             message: error.message,
         });
     });

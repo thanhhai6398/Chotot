@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const Category = require('../models/category.model');
 const STATUS_CODE = require('../utils/httpStatusCode');
+
 const getAll = async (req, res) => {
     return Category.find()
         .then(data => res.status(STATUS_CODE.OK).json({ data }))

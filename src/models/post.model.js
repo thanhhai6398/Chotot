@@ -11,12 +11,13 @@ const postSchema = new Schema(
         address: { type: String, require: true },
         datePosted: { type: String, require: true, default: new Date().toLocaleString() },
         images: { type: [String], require: true },
-        delete_ymd: { type: Date, default: null },
+        last_update: { type: String, default: null },
         branchName: { type: String },
         year: { type: Number },
         warranty: { type: String },
         category: { type: mongoose.Types.ObjectId, ref: 'Category' },
-        postedBy: { type: mongoose.Types.ObjectId, ref: 'User' }
+        postedBy: { type: mongoose.Types.ObjectId, ref: 'User' },
+        status: { type: String, enum: ['pending', 'active', 'hide'], required: true, default: 'pending' }
     },
     {
         versionKey: false
