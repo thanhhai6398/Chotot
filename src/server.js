@@ -14,6 +14,7 @@ const authUserRoute = require('./routes/auth.route');
 const registerRoute = require('./routes/register.route');
 const categoryRoute = require('./routes/api/category.route');
 const postRoute = require('./routes/api/post.route');
+const userRoute = require('./routes/api/user.route');
 
 //set path to .env file
 dotenv.config({ path: './.env' });
@@ -63,6 +64,7 @@ const startServer = () => {
     //authencation
     app.use('/categories', categoryRoute);
     app.use('/posts', postRoute);
+    app.use('/users', userRoute);
 
 
     /** Error handling */
