@@ -78,7 +78,7 @@ const editPost = async (req, res) => {
 const getById = async (req, res) => {
     try {
         const { id } = req.params;
-        const data = await Post.findById(id);
+        const data = await Post.findById(id).populate('category');
         return res.status(STATUS_CODE.OK).json({ data });
     } catch (error) {
         return res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).json({ errMsg: error.message });

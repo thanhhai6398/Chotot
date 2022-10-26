@@ -20,16 +20,16 @@ const authUser = async (req, res) => {
             const accessToken = jwt.sign(
                 {
                     "UserInfo": {
-                        "username": foundUser.phone,
+                        "phone": foundUser.phone,
                         "roles": roles
                     }
                 },
                 process.env.ACCESS_TOKEN_SECRET,
                 { expiresIn: '1h' }
             );
-            //create refresh totkem
+            //create refresh totken
             const refreshToken = jwt.sign(
-                { "username": foundUser.phone },
+                { "phone": foundUser.phone },
                 process.env.REFRESH_TOKEN_SECRET,
                 { expiresIn: '30 days' }
             )

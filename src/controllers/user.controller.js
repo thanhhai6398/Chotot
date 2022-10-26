@@ -1,11 +1,12 @@
 const mongoose = require('mongoose');
 const User = require('../models/user.model');
 const STATUS_CODE = require('../utils/httpStatusCode');
+const ROLE_LIST = require('../utils/role_list');
 
 const getAll = async (req, res) => {
     return User.find()
-        .then(data => res.status(STATUS_CODE.OK).json({data}))
-        .catch(err => res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).json({errMsg: err}));
+        .then(data => res.status(STATUS_CODE.OK).json({ data }))
+        .catch(err => res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).json({ errMsg: err }));
 };
 const getById = (req, res) => {
     const { id } = req.params;
@@ -17,11 +18,11 @@ const getById = (req, res) => {
 };
 const update = async (req, res) => {
     const { id } = req.params;
-    const { username, 
-        password, 
-        phone, 
+    const { username,
+        password,
+        phone,
         address,
-        email 
+        email
     } = req.body;
     const oldUser = User.findById(id)
         .then(user => {
@@ -40,8 +41,15 @@ const update = async (req, res) => {
         })
         .catch(err => res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).json({ errMsg: err }));
 };
+const auhtorizationUser = async (req, res) => {
+    // const {id} = req.params;
+    // const {roles} = req.body;
+    // const user = await User.findById(id);
+    return res.sendStatus(STATUS_CODE.NOT_FOUND);
+}
 module.exports = {
     getAll,
     getById,
-    update
+    update,
+    auhtorizationUser
 }

@@ -5,8 +5,13 @@ const morgan = require("morgan");
 const cors = require('cors');
 const app = express();
 
-const corsOptions = require('./config/corsOptions');
+//middlewares
+const verifyJWT = require('./middlewares/verifyJWT');
 const credentials = require('./middlewares/credentials');
+//config
+const corsOptions = require('./config/corsOptions');
+dotenv.config({ path: './.env' });
+//utitls
 const STATUS_CODE = require('./utils/httpStatusCode');
 
 //routes
@@ -15,9 +20,8 @@ const registerRoute = require('./routes/register.route');
 const categoryRoute = require('./routes/api/category.route');
 const postRoute = require('./routes/api/post.route');
 const userRoute = require('./routes/api/user.route');
+const { verify } = require('jsonwebtoken');
 
-//set path to .env file
-dotenv.config({ path: './.env' });
 
 //use to log
 app.use(morgan("combined"));
@@ -62,6 +66,7 @@ const startServer = () => {
     app.use('/auth', authUserRoute);
     app.use('/register', registerRoute);
     //authencation
+    app.use(verifyJWT);
     app.use('/categories', categoryRoute);
     app.use('/posts', postRoute);
     app.use('/users', userRoute);
