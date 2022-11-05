@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const PostModel = require('../models/post.model');
 const Post = require('../models/post.model');
 const STATUS_CODE = require('../utils/httpStatusCode');
 
@@ -109,9 +110,25 @@ const getAll = async (req, res) => {
     }
 
 }
+const findPostByName = async (req, res) => {
+    const { nameSearch } = req.params;
+    PostModel.find({
+        title: { $regex: '.*' + nameSearch + '.*' }
+    })
+    .then(data=>{
+        return res.status(STATUS_CODE.OK).json({
+            data,
+        });
+    })
+    .catch(err=>{
+        return res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).json({ errMsg: error.message })
+    })
+}
+
 module.exports = {
     uploadPost,
     editPost,
     getById,
-    getAll
+    getAll,
+    findPostByName
 }
