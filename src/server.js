@@ -66,7 +66,7 @@ const startServer = () => {
     app.use('/auth', authUserRoute);
     app.use('/register', registerRoute);
     //authencation
-    app.use(verifyJWT);
+    //app.use(verifyJWT);
     app.use('/categories', categoryRoute);
     app.use('/posts', postRoute);
     app.use('/users', userRoute);
