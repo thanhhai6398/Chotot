@@ -5,7 +5,7 @@ const STATUS_CODE = require('../utils/httpStatusCode');
 const getAll = async (req, res) => {
     return Category.find()
         .then(data => res.status(STATUS_CODE.OK).json({ data }))
-        .catch(err => res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).json({ errMsg: err }));
+        .catch(err => res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).json({ errMsg: err.message }));
 
 };
 const getById = (req, res) => {
@@ -13,7 +13,7 @@ const getById = (req, res) => {
     if (id) {
         Category.findById(id)
             .then(data => res.status(STATUS_CODE.OK).json({ data }))
-            .catch(err => res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).json({ errMsg: err }));
+            .catch(err => res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).json({ errMsg: err.message }));
     }
 };
 const save = (req, res) => {
@@ -25,7 +25,7 @@ const save = (req, res) => {
     return category
         .save()
         .then(data => res.status(STATUS_CODE.OK).json({ data }))
-        .catch(err => res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).json({ errMsg: err }));
+        .catch(err => res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).json({ errMsg: err.message }));
 };
 const deleteById = (req, res) => {
     const { id } = req.params;
@@ -34,9 +34,9 @@ const deleteById = (req, res) => {
             if (category) {
                 res.status(STATUS_CODE.OK).json({ 'message': 'Deleted category with id ' + id });
             }
-            else res.status(STATUS_CODE.BAD_REQUEST).json({ errMsg: "not found" });
+            else res.status(STATUS_CODE.NOT_FOUND).json({ errMsg: 'not found category with id ' + id });
         })
-        .catch(err => res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).json({ errMsg: err }));
+        .catch(err => res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).json({ errMsg: err.message }));
 };
 const update = async (req, res) => {
     const { id } = req.params;
@@ -47,12 +47,12 @@ const update = async (req, res) => {
                 category.name = name;
                 return category.save()
                     .then(data => res.status(STATUS_CODE.OK).json({ data }))
-                    .catch(err => res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).json({ errMsg: err }));
+                    .catch(err => res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).json({ errMsg: err.message }));
             } else {
-                res.status(STATUS_CODE.BAD_REQUEST).json({ errMsg: 'not found category with id ' + id });
+                res.status(STATUS_CODE.NOT_FOUND).json({ errMsg: 'not found category with id ' + id });
             }
         })
-        .catch(err => res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).json({ errMsg: err }));
+        .catch(err => res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).json({ errMsg: err.message }));
 };
 module.exports = {
     getAll,

@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
 const Post = require('../models/post.model');
+const HTTP_STATUS_CODE = require('../utils/httpStatusCode');
 const STATUS_CODE = require('../utils/httpStatusCode');
+const POST_STATUS = require('../utils/postStatusEnum');
 
 const uploadPost = async (req, res) => {
     const { title,
@@ -51,7 +53,6 @@ const editPost = async (req, res) => {
         year,
         warranty,
         category,
-        status
     } = req.body;
     const oldPost = Post.findById(id)
         .then(post => {
@@ -65,7 +66,6 @@ const editPost = async (req, res) => {
                 post.year = year;
                 post.warranty = warranty;
                 post.category = category;
-                post.status = status;
                 return post.save()
                     .then(data => res.status(STATUS_CODE.OK).json({ data }))
                     .catch(err => res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).json({ errMsg: err }));
@@ -109,9 +109,33 @@ const getAll = async (req, res) => {
     }
 
 }
+const activePost = async (req, res) => {
+    const { id } = req.params;
+    const oldPost = await Post.findById(id);
+    if (oldPost) {
+        oldPost.status = POST_STATUS["ACTIVE"];
+        return oldPost.save()
+            .then(data => res.status(HTTP_STATUS_CODE.OK).json({ data }))
+            .catch(err => res.status(HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR).json({ errMsg: err.message }));
+    }
+}
+
+const hidePost = async (req, res) => {
+    const { id } = req.params;
+    const oldPost = await Post.findById(id);
+    if (oldPost) {
+        oldPost.status = POST_STATUS["HIDE"];
+        return oldPost.save()
+            .then(data => res.status(HTTP_STATUS_CODE.OK).json({ data }))
+            .catch(err => res.status(HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR).json({ errMsg: err.message }));
+    }
+}
+
 module.exports = {
     uploadPost,
     editPost,
     getById,
-    getAll
+    getAll,
+    activePost,
+    hidePost,
 }

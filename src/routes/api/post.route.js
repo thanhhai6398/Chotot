@@ -6,4 +6,6 @@ router.get('', controllers.getAll);
 router.get('/:id', controllers.getById);
 router.post('/upload', controllers.uploadPost);
 router.put('/edit/:id', controllers.editPost);
+router.put('/active/:id', controllers.activePost);
+router.put('/hide/:id', controllers.hidePost);
 module.exports = router;
