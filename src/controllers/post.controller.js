@@ -112,17 +112,21 @@ const getAll = async (req, res) => {
 }
 const findPostByName = async (req, res) => {
     const { nameSearch } = req.params;
-    PostModel.find({
-        title: { $regex: '.*' + nameSearch + '.*' }
-    })
-    .then(data=>{
-        return res.status(STATUS_CODE.OK).json({
-            data,
-        });
-    })
-    .catch(err=>{
-        return res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).json({ errMsg: error.message })
-    })
+    try{
+        PostModel.find({
+            title: { $regex: '.*' + nameSearch + '.*' }
+        })
+        .populate('category')
+        .populate('postedBy')
+        //.exec()
+        .then(data=>{
+            return res.status(STATUS_CODE.OK).json({
+                data,
+            });
+        })
+    } catch(err){
+        return res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).json({ errMsg: err.message })
+    }
 }
 
 module.exports = {
