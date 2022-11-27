@@ -8,5 +8,7 @@ router.get('', controllers.getAll);
 router.get('/:id', controllers.getById);
 router.put('/:id', controllers.update);
 router.put('/auhtorization/:id', verifyRoles(ROLE_LIST['ADMIN']), controllers.auhtorizationUser)
-
+router.patch('/:id/follow', controllers.follow);
+router.patch('/:id/unfollow', controllers.unfollow);
+router.get("/getFollowing", controllers.getFollowing);
 module.exports = router;

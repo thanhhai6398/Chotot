@@ -46,10 +46,61 @@ const auhtorizationUser = async (req, res) => {
     // const {roles} = req.body;
     // const user = await User.findById(id);
     return res.sendStatus(STATUS_CODE.NOT_FOUND);
-}
-module.exports = {
-    getAll,
-    getById,
-    update,
-    auhtorizationUser
-}
+};
+const follow = async (req, res) => {
+    try {
+        const user = await User.find({
+            _id: req.user._id,
+            fowllowing: req.params.id,
+        });
+        if (user.length > 0)
+            return res
+                .status(500)
+                .json({ msg: "You are already following this user." });
+
+        const newUser = await User.findOneAndUpdate(
+            { _id: req.user._id },
+            { $push: { fowllowing: req.params.id } },
+            { new: true }
+        );
+
+        res.json({ newUser });
+    } catch (err) {
+        return res.status(500).json({ msg: err.message });
+    }
+};
+const unfollow = async (req, res) => {
+    try {
+        const newUser = await User.findOneAndUpdate(
+            { _id: req.user._id },
+            { $pull: { fowllowing: req.params.id } },
+            { new: true }
+        );
+
+        res.json({ newUser });
+    } catch (err) {
+        return res.status(500).json({ msg: err.message });
+    }
+};
+const getFollowing = async (req, res) => {
+    try {
+        const following = await Post.find({ _id: { $in: req.user.fowllowing } });
+
+        res.json({
+            following,
+            result: following.length
+        })
+
+    } catch (err) {
+        return res.status(500).json({ msg: err.message });
+    }
+};
+    module.exports = {
+        getAll,
+        getById,
+        update,
+        auhtorizationUser,
+        follow,
+        unfollow,
+        getFollowing
+    }

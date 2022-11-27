@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Post = require('../models/post.model');
+const User = require('../models/post.model');
 const STATUS_CODE = require('../utils/httpStatusCode');
 
 const uploadPost = async (req, res) => {
@@ -109,9 +110,81 @@ const getAll = async (req, res) => {
     }
 
 }
+const savePost = async (req, res) => {
+    try {
+        const user = await User.find({
+            _id: req.user._id,
+            postsSaved: req.params.id,
+        });
+        if (user.length > 0) {
+            return res
+                .status(400)
+                .json({ msg: "You have already saved this post." });
+        }
+
+        const save = await User.findOneAndUpdate(
+            { _id: req.user._id },
+            {
+                $push: { postsSaved: req.params.id },
+            },
+            {
+                new: true,
+            }
+        );
+
+        if (!save) {
+            return res.status(400).json({ msg: "User does not exist." });
+        }
+
+        res.json({ msg: "Post saved successfully." });
+    } catch (err) {
+        return res.status(500).json({ msg: err.message });
+    }
+};
+
+const unSavePost = async (req, res) => {
+    try {
+        const save = await User.findOneAndUpdate(
+            { _id: req.user._id },
+            {
+                $pull: { postsSaved: req.params.id },
+            },
+            {
+                new: true,
+            }
+        );
+
+        if (!save) {
+            return res.status(400).json({ msg: "User does not exist." });
+        }
+
+        res.json({ msg: "Post removed from collection successfully." });
+    } catch (err) {
+        return res.status(500).json({ msg: err.message });
+    }
+};
+
+const getPostsSaved = async (req, res) => {
+    try {
+        //const features = new APIfeatures(Post.find({ id: { $in: req.user.postsSaved } }), req.query).paginating();
+
+        const postsSaved = await Post.find({ _id: { $in: req.user.postsSaved } });
+
+        res.json({
+            postsSaved,
+            result: postsSaved.length
+        })
+
+    } catch (err) {
+        return res.status(500).json({ msg: err.message });
+    }
+};
 module.exports = {
     uploadPost,
     editPost,
     getById,
-    getAll
+    getAll,
+    savePost,
+    unSavePost,
+    getPostsSaved,
 }
