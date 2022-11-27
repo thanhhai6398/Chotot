@@ -163,12 +163,40 @@ const hidePost = async (req, res) => {
       )
   }
 }
+const findPostByName = async (req, res) => {
+    const { nameSearch } = req.params;
+    try{
+        PostModel.find({
+            title: { $regex: '.*' + nameSearch + '.*' }
+        })
+        .populate('category')
+        .populate('postedBy')
+        //.exec()
+        .then(data=>{
+            return res.status(STATUS_CODE.OK).json({
+                data,
+            });
+        })
+    } catch(err){
+        return res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).json({ errMsg: err.message })
+    }
+}
+
+module.exports = {
+    uploadPost,
+    editPost,
+    getById,
+    getAll,
+    findPostByName
+}
+=======
 
 module.exports = {
   uploadPost,
   editPost,
   getById,
   getAll,
+  findPostByName,
   activePost,
   hidePost,
 }
