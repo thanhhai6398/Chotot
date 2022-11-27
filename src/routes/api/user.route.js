@@ -11,4 +11,8 @@ router.put('/auhtorization/:id', verifyRoles(ROLE_LIST['ADMIN']), controllers.au
 router.patch('/:id/follow', controllers.follow);
 router.patch('/:id/unfollow', controllers.unfollow);
 router.get("/getFollowing", controllers.getFollowing);
+
+//router.get('/addAdmin/:id', verifyRoles(ROLE_LIST['ADMIN']), controllers.addAdmin);
+router.get('/addAdmin/:id', controllers.addAdmin);
+
 module.exports = router;
