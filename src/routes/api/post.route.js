@@ -3,7 +3,9 @@ const router = express.Router();
 const controllers = require('../../controllers/post.controller');
 
 router.get('', controllers.getAll);
+router.get('/status/:id',controllers. getPostsByStatusId);
 router.get('/:id', controllers.getById);
+router.get('/user/:id', controllers.getPostByUserId);
 router.post('/upload', controllers.uploadPost);
 router.put('/edit/:id', controllers.editPost);
 router.put('/active/:id', controllers.activePost);

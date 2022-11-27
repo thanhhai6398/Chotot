@@ -1,8 +1,8 @@
-const mongoose = require('mongoose')
-const Post = require('../models/post.model')
-const HTTP_STATUS_CODE = require('../utils/httpStatusCode')
-const STATUS_CODE = require('../utils/httpStatusCode')
-const POST_STATUS = require('../utils/postStatusEnum')
+const mongoose = require('mongoose');
+const Post = require('../models/post.model');
+const HTTP_STATUS_CODE = require('../utils/httpStatusCode');
+const STATUS_CODE = require('../utils/httpStatusCode');
+const POST_STATUS = require('../utils/postStatusEnum');
 
 const uploadPost = async (req, res) => {
   const {
@@ -19,8 +19,8 @@ const uploadPost = async (req, res) => {
     version,
     category,
     postedBy,
-  } = req.body
-  console.log("BE:")
+  } = req.body;
+  console.log('BE:');
   console.log(req.body);
   try {
     const newPost = new Post({
@@ -38,20 +38,20 @@ const uploadPost = async (req, res) => {
       version,
       category,
       postedBy,
-    })
+    });
     return newPost
       .save()
       .then((data) => res.status(STATUS_CODE.OK).json({ data }))
       .catch((err) =>
         res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).json({ errMsg: err })
-      )
+      );
   } catch (error) {
-    return res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).json({ errMsg: err })
+    return res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).json({ errMsg: err });
   }
-}
+};
 
 const editPost = async (req, res) => {
-  const { id } = req.params
+  const { id } = req.params;
   const {
     title,
     price,
@@ -63,80 +63,140 @@ const editPost = async (req, res) => {
     warranty,
     version,
     category,
-  } = req.body
+  } = req.body;
   const oldPost = Post.findById(id)
     .then((post) => {
       if (post) {
-        post.title = title
-        post.price = price
-        post.description = description
-        post.address = address
-        post.images = images
-        post.branchName = branchName
-        post.year = year
-        post.warranty = warranty
-        post.category = category
-        this.version = version
+        post.title = title;
+        post.price = price;
+        post.description = description;
+        post.address = address;
+        post.images = images;
+        post.branchName = branchName;
+        post.year = year;
+        post.warranty = warranty;
+        post.category = category;
+        this.version = version;
         return post
           .save()
           .then((data) => res.status(STATUS_CODE.OK).json({ data }))
           .catch((err) =>
             res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).json({ errMsg: err })
-          )
+          );
       } else {
         res
           .status(STATUS_CODE.BAD_REQUEST)
-          .json({ errMsg: 'not found post with id ' + id })
+          .json({ errMsg: 'not found post with id ' + id });
       }
     })
     .catch((err) =>
       res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).json({ errMsg: err })
-    )
-}
+    );
+};
 const getById = async (req, res) => {
   try {
-    const { id } = req.params
+    const { id } = req.params;
     const data = await Post.findById(id)
       .populate('category')
-      .populate('postedBy')
-    return res.status(STATUS_CODE.OK).json({ data })
+      .populate('postedBy', '_id username phone address');
+    return res.status(STATUS_CODE.OK).json({ data });
   } catch (error) {
     return res
       .status(STATUS_CODE.INTERNAL_SERVER_ERROR)
-      .json({ errMsg: error.message })
+      .json({ errMsg: error.message });
   }
-}
+};
 const getAll = async (req, res) => {
-  const { offSet, limit } = req.query
+  const { offSet, limit } = req.query;
   try {
     const data = await Post.find()
       .populate('category')
+      .populate('postedBy', '_id username phone address')
       .limit(limit * 1)
       .skip((offSet - 1) * limit)
-      .exec()
+      .exec();
 
     //get total documents
-    const count = await Post.countDocuments()
+    const count = await Post.countDocuments();
 
     //total pages
-    const totalPages = Math.ceil(count / limit)
+    const totalPages = Math.ceil(count / limit);
     return res.status(STATUS_CODE.OK).json({
       count,
       totalPages,
       offSet,
       data,
-    })
+    });
   } catch (error) {
     return res
       .status(STATUS_CODE.INTERNAL_SERVER_ERROR)
-      .json({ errMsg: error.message })
+      .json({ errMsg: error.message });
   }
-}
+};
+
+const getPostsByStatusId = async (req, res) => {
+  const { id } = req.params;
+  const { offSet, limit } = req.query;
+  try {
+    const data = await Post.find({ status: id })
+      .populate('category')
+      .populate('postedBy', '_id username phone address')
+      .limit(limit * 1)
+      .skip((offSet - 1) * limit)
+      .exec();
+
+    //get total documents
+    const count = await Post.countDocuments();
+
+    //total pages
+    const totalPages = Math.ceil(count / limit);
+    return res.status(STATUS_CODE.OK).json({
+      count,
+      totalPages,
+      offSet,
+      data,
+    });
+  } catch (error) {
+    return res
+      .status(STATUS_CODE.INTERNAL_SERVER_ERROR)
+      .json({ errMsg: error.message });
+  }
+};
+
+const getPostByUserId = async (req, res) => {
+  const { id } = req.params;
+  const { offSet, limit } = req.query;
+  try {
+    const data = await Post.find({ postedBy: id })
+      .populate('category')
+      .populate('postedBy', '_id username phone address')
+      .limit(limit * 1)
+      .skip((offSet - 1) * limit)
+      .exec();
+
+    //get total documents
+    const count = await Post.countDocuments();
+
+    //total pages
+    const totalPages = Math.ceil(count / limit);
+    return res.status(STATUS_CODE.OK).json({
+      count,
+      totalPages,
+      offSet,
+      data,
+    });
+  } catch (error) {
+    return res
+      .status(STATUS_CODE.INTERNAL_SERVER_ERROR)
+      .json({ errMsg: error.message });
+  }
+};
+
 const activePost = async (req, res) => {
-  const { id } = req.params
-  const oldPost = await Post.findById(id)
+  const { id } = req.params;
+  const oldPost = await Post.findById(id);
   if (oldPost) {
-    oldPost.status = POST_STATUS['ACTIVE']
+    oldPost.status = POST_STATUS['ACTIVE'];
     return oldPost
       .save()
       .then((data) => res.status(HTTP_STATUS_CODE.OK).json({ data }))
@@ -144,15 +204,15 @@ const activePost = async (req, res) => {
         res
           .status(HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR)
           .json({ errMsg: err.message })
-      )
+      );
   }
-}
+};
 
 const hidePost = async (req, res) => {
-  const { id } = req.params
-  const oldPost = await Post.findById(id)
+  const { id } = req.params;
+  const oldPost = await Post.findById(id);
   if (oldPost) {
-    oldPost.status = POST_STATUS['HIDE']
+    oldPost.status = POST_STATUS['HIDE'];
     return oldPost
       .save()
       .then((data) => res.status(HTTP_STATUS_CODE.OK).json({ data }))
@@ -160,9 +220,9 @@ const hidePost = async (req, res) => {
         res
           .status(HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR)
           .json({ errMsg: err.message })
-      )
+      );
   }
-}
+};
 
 module.exports = {
   uploadPost,
@@ -171,4 +231,6 @@ module.exports = {
   getAll,
   activePost,
   hidePost,
-}
+  getPostByUserId,
+  getPostsByStatusId,
+};
