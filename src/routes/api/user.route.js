@@ -7,6 +7,7 @@ const ROLE_LIST = require('../../utils/role_list');
 router.get('', controllers.getAll);
 router.get('/:id', controllers.getById);
 router.put('/:id', controllers.update);
-router.put('/auhtorization/:id', verifyRoles(ROLE_LIST['ADMIN']), controllers.auhtorizationUser)
+//router.get('/addAdmin/:id', verifyRoles(ROLE_LIST['ADMIN']), controllers.addAdmin);
+router.get('/addAdmin/:id', controllers.addAdmin);
 
 module.exports = router;

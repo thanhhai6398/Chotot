@@ -6,14 +6,14 @@ const ROLE_LIST = require('../utils/role_list');
 const getAll = async (req, res) => {
     return User.find()
         .then(data => res.status(STATUS_CODE.OK).json({ data }))
-        .catch(err => res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).json({ errMsg: err }));
+        .catch(err => res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).json({ errMsg: err.message }));
 };
 const getById = (req, res) => {
     const { id } = req.params;
     if (id) {
         User.findById(id)
             .then(data => res.status(STATUS_CODE.OK).json({ data }))
-            .catch(err => res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).json({ errMsg: err }));
+            .catch(err => res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).json({ errMsg: err.message }));
     }
 };
 const update = async (req, res) => {
@@ -34,22 +34,28 @@ const update = async (req, res) => {
                 user.email = email;
                 return user.save()
                     .then(data => res.status(STATUS_CODE.OK).json({ data }))
-                    .catch(err => res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).json({ errMsg: err }));
+                    .catch(err => res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).json({ errMsg: err.message }));
             } else {
-                res.status(STATUS_CODE.BAD_REQUEST).json({ errMsg: 'not found category with id ' + id });
+                res.status(STATUS_CODE.NOT_FOUND).json({ errMsg: 'not found user with id ' + id });
             }
         })
-        .catch(err => res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).json({ errMsg: err }));
+        .catch(err => res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).json({ errMsg: err.message }));
 };
-const auhtorizationUser = async (req, res) => {
-    // const {id} = req.params;
-    // const {roles} = req.body;
-    // const user = await User.findById(id);
-    return res.sendStatus(STATUS_CODE.NOT_FOUND);
+const addAdmin = async (req, res) => {
+    const { id } = req.params;
+    const user = await User.findById(id);
+    if (user) {
+        user.roles.Admin = ROLE_LIST["ADMIN"];
+        return user.save()
+            .then(data => res.status(STATUS_CODE.OK).json({ data }))
+            .catch(err => res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).json({ errMsg: err }));
+    } else {
+        res.status(STATUS_CODE.NOT_FOUND).json({ errMsg: 'not found user with id ' + id });
+    }
 }
 module.exports = {
     getAll,
     getById,
     update,
-    auhtorizationUser
+    addAdmin
 }
