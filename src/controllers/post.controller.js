@@ -1,10 +1,7 @@
 const mongoose = require('mongoose');
 const Post = require('../models/post.model');
-<<<<<<< HEAD
-const User = require('../models/post.model');
-=======
+const User = require('../models/user.model');
 const HTTP_STATUS_CODE = require('../utils/httpStatusCode');
->>>>>>> 6c0749390a4672bd0f41938a569d07c8e1c76786
 const STATUS_CODE = require('../utils/httpStatusCode');
 const POST_STATUS = require('../utils/postStatusEnum');
 
@@ -248,87 +245,78 @@ const findPostByName = async (req, res) => {
   }
 };
 
-<<<<<<< HEAD
-}
 const savePost = async (req, res) => {
-    try {
-        const user = await User.find({
-            _id: req.user._id,
-            postsSaved: req.params.id,
-        });
-        if (user.length > 0) {
-            return res
-                .status(400)
-                .json({ msg: "You have already saved this post." });
-        }
-
-        const save = await User.findOneAndUpdate(
-            { _id: req.user._id },
-            {
-                $push: { postsSaved: req.params.id },
-            },
-            {
-                new: true,
-            }
-        );
-
-        if (!save) {
-            return res.status(400).json({ msg: "User does not exist." });
-        }
-
-        res.json({ msg: "Post saved successfully." });
-    } catch (err) {
-        return res.status(500).json({ msg: err.message });
+  try {
+    const user = await User.find({
+      phone: req.phone,
+      postsSaved: req.params,
+    });
+    if (user.length > 0) {
+      return res
+        .status(400)
+        .json({ msg: "You have already saved this post." });
     }
+
+    const save = await User.findOneAndUpdate(
+      { phone: req.phone },
+      {
+        $push: { postsSaved: req.params },
+      },
+      {
+        new: true,
+      }
+    );
+
+    if (!save) {
+      return res.status(400).json({ msg: "User does not exist." });
+    }
+
+    res.json({ msg: "Post saved successfully." });
+  } catch (err) {
+    return res.status(500).json({ msg: err.message });
+  }
 };
 
 const unSavePost = async (req, res) => {
-    try {
-        const save = await User.findOneAndUpdate(
-            { _id: req.user._id },
-            {
-                $pull: { postsSaved: req.params.id },
-            },
-            {
-                new: true,
-            }
-        );
+  try {
+    const save = await User.findOneAndUpdate(
+      { phone: req.phone },
+      {
+        $pull: { postsSaved: req.params },
+      },
+      {
+        new: true,
+      }
+    );
 
-        if (!save) {
-            return res.status(400).json({ msg: "User does not exist." });
-        }
-
-        res.json({ msg: "Post removed from collection successfully." });
-    } catch (err) {
-        return res.status(500).json({ msg: err.message });
+    if (!save) {
+      return res.status(400).json({ msg: "User does not exist." });
     }
+
+    res.json({ msg: "Post removed from collection successfully." });
+  } catch (err) {
+    return res.status(500).json({ msg: err.message });
+  }
 };
 
 const getPostsSaved = async (req, res) => {
-    try {
-        //const features = new APIfeatures(Post.find({ id: { $in: req.user.postsSaved } }), req.query).paginating();
+  try {
+    //const features = new APIfeatures(Post.find({ id: { $in: req.user.postsSaved } }), req.query).paginating();
+    const user = await User.find({
+      phone: req.phone,
+    });
+    const postsSaved = await Post.find({ _id: { $in: user.postsSaved } });
 
-        const postsSaved = await Post.find({ _id: { $in: req.user.postsSaved } });
+    res.json({
+      postsSaved,
+      result: postsSaved.length
+    })
 
-        res.json({
-            postsSaved,
-            result: postsSaved.length
-        })
-
-    } catch (err) {
-        return res.status(500).json({ msg: err.message });
-    }
+  } catch (err) {
+    return res.status(500).json({ msg: err.message });
+  }
 };
-module.exports = {
-    uploadPost,
-    editPost,
-    getById,
-    getAll,
-    savePost,
-    unSavePost,
-    getPostsSaved,
-}
-=======
+
 module.exports = {
   uploadPost,
   editPost,
@@ -339,5 +327,8 @@ module.exports = {
   hidePost,
   getPostByUserId,
   getPostsByStatusId,
+
+  savePost,
+  unSavePost,
+  getPostsSaved,
 };
->>>>>>> 6c0749390a4672bd0f41938a569d07c8e1c76786

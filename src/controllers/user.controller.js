@@ -72,75 +72,71 @@ const addAdmin = async (req, res) => {
       .json({ errMsg: 'not found user with id ' + id });
   }
 };
-<<<<<<< HEAD
+
 const auhtorizationUser = async (req, res) => {
-    // const {id} = req.params;
-    // const {roles} = req.body;
-    // const user = await User.findById(id);
-    return res.sendStatus(STATUS_CODE.NOT_FOUND);
+  // const {id} = req.params;
+  // const {roles} = req.body;
+  // const user = await User.findById(id);
+  return res.sendStatus(STATUS_CODE.NOT_FOUND);
 };
 const follow = async (req, res) => {
-    try {
-        const user = await User.find({
-            _id: req.user._id,
-            fowllowing: req.params.id,
-        });
-        if (user.length > 0)
-            return res
-                .status(500)
-                .json({ msg: "You are already following this user." });
+  try {
+    const user = await User.find({
+      phone: req.phone,
+      fowllowing: req.params,
+    });
+    if (user.length > 0)
+      return res
+        .status(500)
+        .json({ msg: "You are already following this user." });
 
-        const newUser = await User.findOneAndUpdate(
-            { _id: req.user._id },
-            { $push: { fowllowing: req.params.id } },
-            { new: true }
-        );
+    const newUser = await User.findOneAndUpdate(
+      { phone: req.phone },
+      { $push: { fowllowing: req.params } },
+      { new: true }
+    );
 
-        res.json({ newUser });
-    } catch (err) {
-        return res.status(500).json({ msg: err.message });
-    }
+    res.json({ newUser });
+  } catch (err) {
+    return res.status(500).json({ msg: err.message });
+  }
 };
 const unfollow = async (req, res) => {
-    try {
-        const newUser = await User.findOneAndUpdate(
-            { _id: req.user._id },
-            { $pull: { fowllowing: req.params.id } },
-            { new: true }
-        );
+  try {
+    const newUser = await User.findOneAndUpdate(
+      { phone: req.phone },
+      { $pull: { fowllowing: req.params } },
+      { new: true }
+    );
 
-        res.json({ newUser });
-    } catch (err) {
-        return res.status(500).json({ msg: err.message });
-    }
+    res.json({ newUser });
+  } catch (err) {
+    return res.status(500).json({ msg: err.message });
+  }
 };
 const getFollowing = async (req, res) => {
-    try {
-        const following = await Post.find({ _id: { $in: req.user.fowllowing } });
+  try {
+    const user = await User.find({
+      phone: req.phone,
+    });
+    const following = await User.find({ _id: { $in: user.fowllowing } });
 
-        res.json({
-            following,
-            result: following.length
-        })
+    res.json({
+      following,
+      result: following.length
+    })
 
-    } catch (err) {
-        return res.status(500).json({ msg: err.message });
-    }
+  } catch (err) {
+    return res.status(500).json({ msg: err.message });
+  }
 };
-    module.exports = {
-        getAll,
-        getById,
-        update,
-        auhtorizationUser,
-        follow,
-        unfollow,
-        getFollowing
-    }
-=======
 module.exports = {
   getAll,
   getById,
   update,
   addAdmin,
+  auhtorizationUser,
+  follow,
+  unfollow,
+  getFollowing
 };
->>>>>>> 6c0749390a4672bd0f41938a569d07c8e1c76786
