@@ -7,7 +7,6 @@ const userSchema = new Schema(
     password: { type: String, require: true },
     phone: { type: String, require: true },
     address: { type: String, require: true },
-    email: { type: String, require: true },
     fowllowing: { type: [mongoose.Types.ObjectId] },
     postsSaved: { type: [mongoose.Types.ObjectId] },
     refreshToken: { type: String },

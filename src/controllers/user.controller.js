@@ -57,7 +57,8 @@ const update = async (req, res) => {
 };
 const addAdmin = async (req, res) => {
   const { id } = req.params;
-  const user = await User.findById(id);
+  const user = await User.findById(id).exec();
+  console.log(user);
   if (user) {
     user?.roles.push(ROLE['ADMIN']);
     return user
