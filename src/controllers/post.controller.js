@@ -3,6 +3,7 @@ const Post = require('../models/post.model');
 const HTTP_STATUS_CODE = require('../utils/httpStatusCode');
 const STATUS_CODE = require('../utils/httpStatusCode');
 const POST_STATUS = require('../utils/postStatusEnum');
+const { getPagination } = require('../utils/query');
 
 const uploadPost = async (req, res) => {
   const {
@@ -107,13 +108,14 @@ const getById = async (req, res) => {
   }
 };
 const getAll = async (req, res) => {
-  const { offSet, limit } = req.query;
+  const { page, size } = req.query;
+  const { skip, limit } = getPagination(page, size);
   try {
     const data = await Post.find()
       .populate('category')
       .populate('postedBy', '_id username phone address')
-      .limit(limit * 1)
-      .skip((offSet - 1) * limit)
+      .limit(limit)
+      .skip(skip)
       .exec();
 
     //get total documents
@@ -124,7 +126,7 @@ const getAll = async (req, res) => {
     return res.status(STATUS_CODE.OK).json({
       count,
       totalPages,
-      offSet,
+      page,
       data,
     });
   } catch (error) {
@@ -136,24 +138,25 @@ const getAll = async (req, res) => {
 
 const getPostsByStatusId = async (req, res) => {
   const { id } = req.params;
-  const { offSet, limit } = req.query;
+  const { page, size } = req.query;
+  const { skip, limit } = getPagination(page, size);
   try {
     const data = await Post.find({ status: id })
       .populate('category')
       .populate('postedBy', '_id username phone address')
-      .limit(limit * 1)
-      .skip((offSet - 1) * limit)
+      .limit(limit)
+      .skip(skip)
       .exec();
 
     //get total documents
-    const count = await Post.countDocuments();
+    const count = await Post.find({ status: id }).countDocuments();
 
     //total pages
     const totalPages = Math.ceil(count / limit);
     return res.status(STATUS_CODE.OK).json({
       count,
       totalPages,
-      offSet,
+      page,
       data,
     });
   } catch (error) {
@@ -165,24 +168,25 @@ const getPostsByStatusId = async (req, res) => {
 
 const getPostByUserId = async (req, res) => {
   const { id } = req.params;
-  const { offSet, limit } = req.query;
+  const { page, size } = req.query;
+  const { skip, limit } = getPagination(page, size);
   try {
     const data = await Post.find({ postedBy: id })
       .populate('category')
       .populate('postedBy', '_id username phone address')
-      .limit(limit * 1)
-      .skip((offSet - 1) * limit)
+      .limit(limit)
+      .skip(skip)
       .exec();
 
     //get total documents
-    const count = await Post.countDocuments();
+    const count = await Post.find({ postedBy: id }).countDocuments();
 
     //total pages
     const totalPages = Math.ceil(count / limit);
     return res.status(STATUS_CODE.OK).json({
       count,
       totalPages,
-      offSet,
+      page,
       data,
     });
   } catch (error) {
@@ -226,11 +230,11 @@ const hidePost = async (req, res) => {
 const findPostByName = async (req, res) => {
   const { nameSearch } = req.params;
   try {
-    PostModel.find({
-      title: { $regex: '.*' + nameSearch + '.*' },
+    Post.find({
+      title: new RegExp(nameSearch, 'i'),
     })
       .populate('category')
-      .populate('postedBy')
+      .populate('postedBy', '_id name phone address')
       //.exec()
       .then((data) => {
         return res.status(STATUS_CODE.OK).json({
