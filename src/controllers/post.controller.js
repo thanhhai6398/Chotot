@@ -310,10 +310,11 @@ const getPostsSaved = async (req, res) => {
     const user = await User.findOne({
       phone: req.phone,
     });
+    const postsSaved = await Post.find({ _id: { $in: user.postsSaved } });
 
-    console.log(user);
     res.json({
-      user
+      postsSaved,
+      result: postsSaved.length
     })
 
   } catch (err) {

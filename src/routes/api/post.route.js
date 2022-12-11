@@ -19,7 +19,6 @@ router.put('/edit/:id', controllers.editPost);
 
 router.patch("/savePost/:id", verifyJWT, controllers.savePost);
 router.patch("/unSavePost/:id", verifyJWT, controllers.unSavePost);
-router.get("/getPostsSaved", verifyJWT, controllers.getPostsSaved);
 router.put('/active/:id', controllers.activePost);
 router.put('/hide/:id', controllers.hidePost);
 
