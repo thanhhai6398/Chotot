@@ -250,10 +250,11 @@ const findPostByName = async (req, res) => {
 };
 
 const savePost = async (req, res) => {
+  const id = mongoose.Types.ObjectId(req.params);
   try {
     const user = await User.find({
       phone: req.phone,
-      postsSaved: req.params,
+      postsSaved: id,
     });
     if (user.length > 0) {
       return res
@@ -261,43 +262,44 @@ const savePost = async (req, res) => {
         .json({ msg: "You have already saved this post." });
     }
 
-    const save = await User.findOneAndUpdate(
+    const newUser = await User.findOneAndUpdate(
       { phone: req.phone },
       {
-        $push: { postsSaved: req.params },
+        $push: { postsSaved: id },
       },
       {
         new: true,
       }
     );
 
-    if (!save) {
+    if (!newUser) {
       return res.status(400).json({ msg: "User does not exist." });
     }
 
-    res.json({ msg: "Post saved successfully." });
+    res.json({ newUser });
   } catch (err) {
     return res.status(500).json({ msg: err.message });
   }
 };
 
 const unSavePost = async (req, res) => {
+  const id = mongoose.Types.ObjectId(req.params);
   try {
-    const save = await User.findOneAndUpdate(
+    const newUser = await User.findOneAndUpdate(
       { phone: req.phone },
       {
-        $pull: { postsSaved: req.params },
+        $pull: { postsSaved: id },
       },
       {
         new: true,
       }
     );
 
-    if (!save) {
+    if (!newUser) {
       return res.status(400).json({ msg: "User does not exist." });
     }
 
-    res.json({ msg: "Post removed from collection successfully." });
+    res.json({ newUser });
   } catch (err) {
     return res.status(500).json({ msg: err.message });
   }
@@ -305,15 +307,13 @@ const unSavePost = async (req, res) => {
 
 const getPostsSaved = async (req, res) => {
   try {
-    //const features = new APIfeatures(Post.find({ id: { $in: req.user.postsSaved } }), req.query).paginating();
-    const user = await User.find({
+    const user = await User.findOne({
       phone: req.phone,
     });
-    const postsSaved = await Post.find({ _id: { $in: user.postsSaved } });
 
+    console.log(user);
     res.json({
-      postsSaved,
-      result: postsSaved.length
+      user
     })
 
   } catch (err) {

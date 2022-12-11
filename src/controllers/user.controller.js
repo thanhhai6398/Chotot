@@ -81,10 +81,11 @@ const auhtorizationUser = async (req, res) => {
   return res.sendStatus(STATUS_CODE.NOT_FOUND);
 };
 const follow = async (req, res) => {
+  const id = mongoose.Types.ObjectId(req.params);
   try {
     const user = await User.find({
       phone: req.phone,
-      fowllowing: req.params,
+      fowllowing: id,
     });
     if (user.length > 0)
       return res
@@ -93,7 +94,7 @@ const follow = async (req, res) => {
 
     const newUser = await User.findOneAndUpdate(
       { phone: req.phone },
-      { $push: { fowllowing: req.params } },
+      { $push: { fowllowing: id } },
       { new: true }
     );
 
@@ -103,10 +104,11 @@ const follow = async (req, res) => {
   }
 };
 const unfollow = async (req, res) => {
+  const id = mongoose.Types.ObjectId(req.params);
   try {
     const newUser = await User.findOneAndUpdate(
       { phone: req.phone },
-      { $pull: { fowllowing: req.params } },
+      { $pull: { fowllowing: id } },
       { new: true }
     );
 
@@ -117,9 +119,9 @@ const unfollow = async (req, res) => {
 };
 const getFollowing = async (req, res) => {
   try {
-    const user = await User.find({
+    const user = await User.findOne({
       phone: req.phone,
-    });
+    },);
     const following = await User.find({ _id: { $in: user.fowllowing } });
 
     res.json({
