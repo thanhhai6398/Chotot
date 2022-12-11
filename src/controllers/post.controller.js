@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Post = require('../models/post.model');
+const User = require('../models/user.model');
 const HTTP_STATUS_CODE = require('../utils/httpStatusCode');
 const STATUS_CODE = require('../utils/httpStatusCode');
 const POST_STATUS = require('../utils/postStatusEnum');
@@ -248,6 +249,79 @@ const findPostByName = async (req, res) => {
   }
 };
 
+const savePost = async (req, res) => {
+  const id = mongoose.Types.ObjectId(req.params);
+  try {
+    const user = await User.find({
+      phone: req.phone,
+      postsSaved: id,
+    });
+    if (user.length > 0) {
+      return res
+        .status(400)
+        .json({ msg: "You have already saved this post." });
+    }
+
+    const newUser = await User.findOneAndUpdate(
+      { phone: req.phone },
+      {
+        $push: { postsSaved: id },
+      },
+      {
+        new: true,
+      }
+    );
+
+    if (!newUser) {
+      return res.status(400).json({ msg: "User does not exist." });
+    }
+
+    res.json({ newUser });
+  } catch (err) {
+    return res.status(500).json({ msg: err.message });
+  }
+};
+
+const unSavePost = async (req, res) => {
+  const id = mongoose.Types.ObjectId(req.params);
+  try {
+    const newUser = await User.findOneAndUpdate(
+      { phone: req.phone },
+      {
+        $pull: { postsSaved: id },
+      },
+      {
+        new: true,
+      }
+    );
+
+    if (!newUser) {
+      return res.status(400).json({ msg: "User does not exist." });
+    }
+
+    res.json({ newUser });
+  } catch (err) {
+    return res.status(500).json({ msg: err.message });
+  }
+};
+
+const getPostsSaved = async (req, res) => {
+  try {
+    const user = await User.findOne({
+      phone: req.phone,
+    });
+    const postsSaved = await Post.find({ _id: { $in: user.postsSaved } });
+
+    res.json({
+      postsSaved,
+      result: postsSaved.length
+    })
+
+  } catch (err) {
+    return res.status(500).json({ msg: err.message });
+  }
+};
+
 module.exports = {
   uploadPost,
   editPost,
@@ -258,4 +332,8 @@ module.exports = {
   hidePost,
   getPostByUserId,
   getPostsByStatusId,
+
+  savePost,
+  unSavePost,
+  getPostsSaved,
 };

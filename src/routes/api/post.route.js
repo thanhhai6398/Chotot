@@ -16,6 +16,9 @@ router.use(verifyRoles(ROLE_LIST['ADMIN'], ROLE_LIST['USER']));
 router.post('/upload', controllers.uploadPost);
 router.get('/user/:id', controllers.getPostByUserId);
 router.put('/edit/:id', controllers.editPost);
+
+router.patch("/savePost/:id", verifyJWT, controllers.savePost);
+router.patch("/unSavePost/:id", verifyJWT, controllers.unSavePost);
 router.put('/active/:id', controllers.activePost);
 router.put('/hide/:id', controllers.hidePost);
 
