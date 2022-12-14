@@ -9,7 +9,6 @@ const ROLE_LIST = require('../../utils/role_list');
 router.put('/auhtorization/:id', verifyRoles(ROLE_LIST['ADMIN']), controllers.auhtorizationUser)
 router.patch('/follow/:id', verifyJWT, controllers.follow);
 router.patch('/unfollow/:id', verifyJWT, controllers.unfollow);
-router.get("/getFollowing", verifyJWT, controllers.getFollowing);
 router.get("/getPostsSaved", verifyJWT, postControllers.getPostsSaved);
 
 router.get('', verifyRoles(ROLE_LIST['ADMIN']), controllers.getAll);

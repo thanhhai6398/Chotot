@@ -118,9 +118,10 @@ const unfollow = async (req, res) => {
   }
 };
 const getFollowing = async (req, res) => {
+  const { id } = req.params;
   try {
     const user = await User.findOne({
-      phone: req.phone,
+      _id: id,
     },);
     const following = await User.find({ _id: { $in: user.fowllowing } });
 

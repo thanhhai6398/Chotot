@@ -23,6 +23,7 @@ const refreshRoute = require('./routes/refresh.route');
 const categoryRoute = require('./routes/api/category.route');
 const postRoute = require('./routes/api/post.route');
 const userRoute = require('./routes/api/user.route');
+const followingRoute = require('./routes/following.route');
 
 //use to log
 app.use(morgan('combined'));
@@ -73,6 +74,7 @@ const startServer = () => {
   app.use('/refresh', refreshRoute);
   app.use('/categories', categoryRoute);
   app.use('/posts', postRoute);
+  app.use('/getFollowing', followingRoute);
   //authencation
   app.use(verifyJWT);
   app.use('/users', userRoute);
