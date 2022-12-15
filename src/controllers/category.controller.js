@@ -28,6 +28,7 @@ const save = (req, res) => {
   const category = new Category({
     _id: new mongoose.Types.ObjectId(),
     name,
+    image,
   });
   return category
     .save()
@@ -64,6 +65,7 @@ const update = async (req, res) => {
     .then((category) => {
       if (category) {
         category.name = name;
+        category.image = image;
         return category
           .save()
           .then((data) => res.status(STATUS_CODE.OK).json({ data }))
