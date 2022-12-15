@@ -73,9 +73,74 @@ const addAdmin = async (req, res) => {
       .json({ errMsg: 'not found user with id ' + id });
   }
 };
+
+const auhtorizationUser = async (req, res) => {
+  // const {id} = req.params;
+  // const {roles} = req.body;
+  // const user = await User.findById(id);
+  return res.sendStatus(STATUS_CODE.NOT_FOUND);
+};
+const follow = async (req, res) => {
+  const id = mongoose.Types.ObjectId(req.params);
+  try {
+    const user = await User.find({
+      phone: req.phone,
+      fowllowing: id,
+    });
+    if (user.length > 0)
+      return res
+        .status(500)
+        .json({ msg: "You are already following this user." });
+
+    const newUser = await User.findOneAndUpdate(
+      { phone: req.phone },
+      { $push: { fowllowing: id } },
+      { new: true }
+    );
+
+    res.json({ newUser });
+  } catch (err) {
+    return res.status(500).json({ msg: err.message });
+  }
+};
+const unfollow = async (req, res) => {
+  const id = mongoose.Types.ObjectId(req.params);
+  try {
+    const newUser = await User.findOneAndUpdate(
+      { phone: req.phone },
+      { $pull: { fowllowing: id } },
+      { new: true }
+    );
+
+    res.json({ newUser });
+  } catch (err) {
+    return res.status(500).json({ msg: err.message });
+  }
+};
+const getFollowing = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const user = await User.findOne({
+      _id: id,
+    },);
+    const following = await User.find({ _id: { $in: user.fowllowing } });
+
+    res.json({
+      following,
+      result: following.length
+    })
+
+  } catch (err) {
+    return res.status(500).json({ msg: err.message });
+  }
+};
 module.exports = {
   getAll,
   getById,
   update,
   addAdmin,
+  auhtorizationUser,
+  follow,
+  unfollow,
+  getFollowing
 };
