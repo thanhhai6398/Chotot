@@ -14,17 +14,17 @@ router.get("/getPostsSaved", verifyJWT, postControllers.getPostsSaved);
 router.get('', verifyRoles(ROLE_LIST['ADMIN']), controllers.getAll);
 router.get(
   '/:id',
-  verifyRoles(ROLE_LIST['USER'], ROLE_LIST['ADMIN']),
+  //verifyRoles(ROLE_LIST['USER'], ROLE_LIST['ADMIN']),
   controllers.getById
 );
 router.put(
   '/:id',
-  verifyRoles(ROLE_LIST['USER'], ROLE_LIST['ADMIN']),
+  //verifyRoles(ROLE_LIST['USER'], ROLE_LIST['ADMIN']),
   controllers.update
 );
 router.get(
   '/addAdmin/:id',
-  verifyRoles(ROLE_LIST['ADMIN']),
+  //verifyRoles(ROLE_LIST['ADMIN']),
   controllers.addAdmin
 );
 

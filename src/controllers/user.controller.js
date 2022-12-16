@@ -26,12 +26,12 @@ const getById = (req, res) => {
 };
 const update = async (req, res) => {
   const { id } = req.params;
-  const { username, password, phone, address, email } = req.body;
+  const { username, phone, address, email } = req.body;
   const oldUser = User.findById(id)
     .then((user) => {
       if (user) {
         user.username = username;
-        user.password = password;
+        //user.password = password;
         user.phone = phone;
         user.address = address;
         user.email = email;
