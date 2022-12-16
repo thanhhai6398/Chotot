@@ -31,7 +31,7 @@ const postSchema = new Schema(
         POST_STATUS['HIDE'],
       ],
       required: true,
-      default: POST_STATUS['PENDING'],
+      default: POST_STATUS['ACTIVE'],
     },
   },
   {
