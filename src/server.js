@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const morgan = require('morgan');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
+const path = require('path');
 const app = express();
 
 //middlewares
@@ -53,21 +54,12 @@ const startServer = () => {
 
   //middleware for cookies
   app.use(cookieParser());
+  app.use(express.urlencoded({ extended: false }));
 
-  // /** Rules of our API */
-  // app.use((req, res, next) => {
-  //     res.header('Access-Control-Allow-Origin', '*');
-  //     res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
-
-  //     if (req.method == 'OPTIONS') {
-  //         res.header('Access-Control-Allow-Methods', 'PUT, POST, PATCH, DELETE, GET');
-  //         return res.status(200).json({});
-  //     }
-
-  //     next();
-  // });
   /* Routes */
   app.get('/', (req, res) => res.send('Hello World!'));
+  /*static folder */
+  app.use('/static', express.static(__dirname + 'public'));
   app.use('/auth', authUserRoute);
   app.use('/register', registerRoute);
   app.use('/logout', logoutRoute);

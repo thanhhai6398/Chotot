@@ -6,8 +6,6 @@ const verifyRoles = (...allowedRoles) => {
       return res.sendStatus(STATUS_CODE.UNAUTHORIZED);
     }
     const roles = [...allowedRoles];
-    console.log(roles);
-    console.log(req.roles);
     const result = req.roles
       .map((role) => roles.includes(role))
       .find((val) => val === true);

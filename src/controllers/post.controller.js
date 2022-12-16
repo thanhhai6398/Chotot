@@ -5,6 +5,8 @@ const HTTP_STATUS_CODE = require('../utils/httpStatusCode');
 const STATUS_CODE = require('../utils/httpStatusCode');
 const POST_STATUS = require('../utils/postStatusEnum');
 const { getPagination } = require('../utils/query');
+const DIR = require('../utils/uploadDir');
+//const findSameImages = require('./services/compareImage');
 
 const uploadPost = async (req, res) => {
   const {
@@ -66,6 +68,7 @@ const editPost = async (req, res) => {
     version,
     category,
   } = req.body;
+  console.log(images);
   const oldPost = Post.findById(id)
     .then((post) => {
       if (post) {
@@ -249,6 +252,12 @@ const findPostByName = async (req, res) => {
   }
 };
 
+const findPostByImage = async (req, res) => {
+  const searchImage = `http://localhost:5000/static/upload/${req.file.filename}`;
+  const categoryId = req.body.categoryId;
+  const posts = req.body.posts;
+  console.log(searchImage);
+  return res.status(STATUS_CODE.OK).json({ data: searchImage });
 const savePost = async (req, res) => {
   const id = mongoose.Types.ObjectId(req.params);
   try {
@@ -332,8 +341,12 @@ module.exports = {
   hidePost,
   getPostByUserId,
   getPostsByStatusId,
+<<<<<<< HEAD
+  findPostByImage,
+=======
 
   savePost,
   unSavePost,
   getPostsSaved,
+>>>>>>> cb09abaa85f51a47b55b68b5b0c40dcf79fc867e
 };

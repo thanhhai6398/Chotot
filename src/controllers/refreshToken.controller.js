@@ -4,7 +4,7 @@ const STATUS_CODE = require('../utils/httpStatusCode');
 
 const handleRefreshToken = async (req, res) => {
   const cookies = req.cookies;
-  console.log(cookies);
+  console.log('COOKIE', cookies.jwt);
   if (!cookies?.jwt) return res.sendStatus(STATUS_CODE.UNAUTHORIZED);
   const refreshToken = cookies.jwt;
   res.clearCookie('jwt', { httpOnly: true, sameSite: 'None', secure: true });

@@ -27,13 +27,13 @@ const authUser = async (req, res) => {
           },
         },
         process.env.ACCESS_TOKEN_SECRET,
-        { expiresIn: '1h' }
+        { expiresIn: '1 day' }
       );
       //create refresh totken
       const refreshToken = jwt.sign(
         { phone: foundUser.phone },
         process.env.REFRESH_TOKEN_SECRET,
-        { expiresIn: '1 day' }
+        { expiresIn: '30 days' }
       );
       //save refresh totken with logged user
       foundUser.refreshToken = refreshToken;
